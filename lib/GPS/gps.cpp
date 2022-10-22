@@ -1,6 +1,8 @@
 #include "gps.h"
 
-static bool ProcessGPS() {
+NAV_PVT pvt;
+
+bool ProcessGPS() {
   static int fpos = 0;
   static unsigned char checksum[2];
   const int payloadSize = sizeof(NAV_PVT);
@@ -40,7 +42,7 @@ static bool ProcessGPS() {
   return false;
 }
 
-static void CalcChecksum(unsigned char* CK) {
+void CalcChecksum(unsigned char* CK) {
   memset(CK, 0, 2);
   for (int i = 0; i < (int)sizeof(NAV_PVT); i++) {
     CK[0] += ((unsigned char*)(&pvt))[i];

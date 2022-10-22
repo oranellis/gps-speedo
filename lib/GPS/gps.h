@@ -68,8 +68,6 @@ struct NAV_PVT {
   unsigned char dummy[8];
 };
 
-NAV_PVT pvt;
 
-
-static void CalcChecksum(unsigned char* CK);
-static bool ProcessGPS();
+void CalcChecksum(unsigned char* CK);
+bool ProcessGPS();
