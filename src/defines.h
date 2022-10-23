@@ -1,2 +1,3 @@
 #define BAUDRATE 115200
 #define INTERP_NUM 6
+#define DISPLAY_HZ 60
