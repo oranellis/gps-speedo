@@ -1,4 +1,12 @@
 #include <U8g2lib.h>
 #include <Wire.h>
 
-void DisplayNum(double num);
+class Display {
+    public:
+        void init();
+        void SetUnits(char units_str[4]);
+        void SetSpeed(double speed_inp);
+    private:
+        char units[4];
+        double speed;
+};
