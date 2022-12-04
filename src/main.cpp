@@ -15,6 +15,10 @@ uint8 gps_hz = 0;
 uint16 last_disp_refresh = 0;
 
 
+float round1(float num) {
+    return ((float)((int)(num * 10)))/10;
+}
+
 void setup() {
     Serial.begin(BAUDRATE);
     display.init();
@@ -29,12 +33,13 @@ void loop() {
         prev_speed = ground_speed;
         ground_speed = pvt.gnd_speed;
         interp_count = 0;
-        display.SetSpeed(Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * 0.0036);
+        //display.SetSpeed(Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * 0.0036);
         last_disp_refresh = cur_time;
     }
 
     if ((last_disp_refresh - millis()) >= (1000 / DISPLAY_HZ)) {
         print_val = Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * 0.0036;
-        display.SetSpeed(print_val);
+        //display.SetSpeed(print_val);
+        display.SetSpeed(112.45);
     }
 }
