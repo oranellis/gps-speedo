@@ -18,7 +18,7 @@ void Display::SetUnits(char units_str[4]) {
     }
 }
 
-void Display::SetSpeed(float speed_inp, int sats) {
+void Display::UpdateDisp(float speed_inp, int sats, float timer) {
     u8g2->clearBuffer();
     u8g2->setFont(u8g2_font_logisoso46_tn);
     u8g2->setCursor(0, 49);
