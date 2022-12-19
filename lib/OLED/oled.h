@@ -6,7 +6,7 @@ public:
     void init();
     void SetUnits(char units_str[4]);
     void SetSpeed(float speed_inp, int sats);
-    void NoMessages();
+    void ErrorMsg(const char* message);
 private:
     char units[4];
     double speed;

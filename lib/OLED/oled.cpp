@@ -32,9 +32,9 @@ void Display::SetSpeed(float speed_inp, int sats) {
     u8g2->sendBuffer();
 }
 
-void Display::NoMessages() {
+void Display::ErrorMsg(const char* message) {
     u8g2->clearBuffer();
     u8g2->setFont(u8g2_font_helvR08_tr);
-    u8g2->drawButtonUTF8(64, 36, U8G2_BTN_INV|U8G2_BTN_BW2|U8G2_BTN_HCENTER, 0,  2,  2, "No GPS Data" );
+    u8g2->drawButtonUTF8(64, 36, U8G2_BTN_INV|U8G2_BTN_BW2|U8G2_BTN_HCENTER, 0,  2,  2, message );
     u8g2->sendBuffer();
 }
