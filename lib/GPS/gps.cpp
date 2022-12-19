@@ -1,7 +1,14 @@
 #include "gps.h"
 
 
-bool ProcessGPS(NAV_PVT pvt) {
+void InitGPS() {
+  for(unsigned int i = 0; i < sizeof(UBLOX_INIT); i++) {                        
+    Serial.write( pgm_read_byte(UBLOX_INIT+i) );
+    delay(5); // simulating a 38400baud pace (or less), otherwise commands are not accepted by the device.
+  }
+}
+
+bool ProcessGPS(NAV_PVT* pvt) {
   static int fpos = 0;
   static unsigned char checksum[2];
   const int payloadSize = sizeof(NAV_PVT);
@@ -16,12 +23,12 @@ bool ProcessGPS(NAV_PVT pvt) {
     }
     else {      
       if ( (fpos-2) < payloadSize )
-        ((unsigned char*)(&pvt))[fpos-2] = c;
+        ((unsigned char*)(pvt))[fpos-2] = c;
 
       fpos++;
 
       if ( fpos == (payloadSize+2) ) {
-        CalcChecksum(checksum, pvt);
+        CalcChecksum(checksum, *pvt);
       }
       else if ( fpos == (payloadSize+3) ) {
         if ( c != checksum[0] )

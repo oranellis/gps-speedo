@@ -70,4 +70,5 @@ struct NAV_PVT {
 
 
 void CalcChecksum(unsigned char* CK, NAV_PVT pvt);
-bool ProcessGPS(NAV_PVT pvt);
+void InitGPS();
+bool ProcessGPS(NAV_PVT* pvt);
