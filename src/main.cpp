@@ -13,15 +13,16 @@ double prev_speed = 0;
 double ground_speed = 0;
 float print_val = 0;
 int interp_count = 0;
-long last_gps_refresh = 0;
+unsigned long last_gps_refresh = 0;
 uint8 gps_hz = 0;
-long last_disp_refresh = 0;
+unsigned long last_disp_refresh = 0;
 
 unsigned long cur_time = 0;
 
 int start_speed = 1;
 int end_speed = 101;
 bool acc_started = false;
+bool acc_ready = true;
 unsigned long acc_start_time;
 long timer;
 
@@ -57,15 +58,21 @@ void loop() {
         if (acc_started) {
             timer = millis() - acc_start_time;
             if ((int)(ground_speed * 0.0036) > end_speed) {
+                acc_ready = 0;
                 acc_started = 0;
             } else if ((int)(ground_speed * 0.0036) < start_speed) {
                 timer = 0;
+                acc_ready = 1;
                 acc_started = 0;
             }
-        } else if ((int)(ground_speed * 0.0036) > start_speed) {
+        } else if ((acc_ready) && ((int)(ground_speed * 0.0036) > start_speed)) {
             acc_start_time = millis();
             timer = 0;
             acc_started = 1;
+            acc_ready = 0;
+        } else if ((!acc_ready) && ((int)(ground_speed * 0.0036) < start_speed)) {
+            timer = 0;
+            acc_ready = 1;
         }
 
     } else if ((millis() - last_gps_refresh) > 1000)  {
