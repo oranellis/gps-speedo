@@ -29,9 +29,11 @@ long timer;
 
 
 void setup() {
-    Serial.begin(BAUDRATE);
     display.init();
+    Serial.begin(BAUDRATE);
     InitGPS();
+    Serial.end();
+    Serial.begin(115200);
     int start_time = millis();
 
     while (!ProcessGPS(&pvt)) {
@@ -41,6 +43,7 @@ void setup() {
             break;
         }
     }
+    delay(200);
 }
 
 void loop() {
