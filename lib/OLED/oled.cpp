@@ -1,6 +1,5 @@
 #include "oled.h"
 
-U8G2 *u8g2;
 
 void Display::init() {
     u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
@@ -10,6 +9,10 @@ void Display::init() {
     u8g2->setCursor(0, 49);
     u8g2->print("GPS");
     u8g2->sendBuffer();
+}
+
+U8G2* Display::GetU8G2() {
+    return u8g2;
 }
 
 void Display::SetUnits(char units_str[4]) {

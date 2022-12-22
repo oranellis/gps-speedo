@@ -1,9 +1,11 @@
 #include <gps.h>
 #include <oled.h>
 #include <interp.h>
+#include <button.h>
 #include <defines.h>
 
 Display display;
+U8G2* disp;
 NAV_PVT pvt;
 
 enum states{Accel, Menu, Error};
@@ -11,6 +13,8 @@ enum states state = Accel;
 
 short error = 0;
 String error_msg;
+
+Button* menu_btn;
 
 double prev_speed = 0;
 double ground_speed = 0;
@@ -37,41 +41,45 @@ void IRAM_ATTR ISR_MENU() {
   debounce_tmr = (millis() + 20);
 }
 
+void switchMenu() {
+    if (state == Menu) {
+        state = Accel;
+    } else {
+        state = Menu;
+    }
+}
+
 void setup() {
     pinMode(12, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(12), ISR_MENU, FALLING);
+    menu_btn = new Button(12, &debounce_tmr, switchMenu);
 
     display.init();
+    disp = display.GetU8G2();
     Serial.begin(BAUDRATE);
     InitGPS();
     Serial.end();
     Serial.begin(115200);
-    int start_time = millis();
+    
+    
+    //int start_time = millis();
 
-    while (!ProcessGPS(&pvt)) {
+    /*while (!ProcessGPS(&pvt)) {
         if (millis() - start_time > 5000) {
             state = Error;
             error_msg = "No GPS Data";
             break;
         }
     }
-    delay(200);
+    delay(200);*/
 }
 
 void loop() {
-    switch (state) {
-        case Accel :
-            if (millis() >= debounce_tmr && debounce_tmr != 0) {
-                debounce_tmr = 0;
-                if (!digitalRead(12)) {
-                    if (menu) {
-                        menu = 0;
-                    } else {
-                        menu = 1;
-                    }
-                }
-            }
+    menu_btn->check();
 
+    switch (state) {
+        case Error :
+        case Accel :
             /*while (menu) {
                 if (!menu) {
                     menu = 0;
@@ -121,9 +129,11 @@ void loop() {
                 display.ErrorMsg(error_msg.c_str());
             }
             break;
-        default :
-            while (1) {
-                ;;
-            }
+        case Menu :
+            disp->clearBuffer();
+            disp->setFont(u8g2_font_profont17_mr);
+            disp->setCursor(0, 64);
+            disp->print("HELLO");
+            disp->sendBuffer();
     }
 }

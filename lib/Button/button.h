@@ -2,11 +2,12 @@
 
 class Button {
 public:
-    Button(int pin, void (*btn_func) (void));
+    Button(int pin, unsigned long* debounce_tmr_var, void (*btn_func) ());
     void check();
+    void setFunc(void (*btn_func) ());
 private:
-    static void IRAM_ATTR isr_func();
-    void* func;
-    long debounce_tmr;
+    void (*func) ();
+    int pin_num;
+    unsigned long* debounce_tmr;
     bool active;
 };
