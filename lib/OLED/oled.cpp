@@ -3,7 +3,7 @@
 
 void Display::init() {
     u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-    u8g2->begin();
+    u8g2->begin(13, 14, 12);
     u8g2->clearBuffer();
     u8g2->setFont(u8g2_font_inr46_mf);
     u8g2->setCursor(0, 49);

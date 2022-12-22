@@ -8,8 +8,8 @@ Display display;
 U8G2* disp;
 NAV_PVT pvt;
 
-enum states{Accel, Menu, Error};
-enum states state = Accel;
+enum states{Accel, Menu, Error, ChangeVar};
+uint8_t state = Accel;
 
 short error = 0;
 String error_msg;
@@ -80,11 +80,6 @@ void loop() {
     switch (state) {
         case Error :
         case Accel :
-            /*while (menu) {
-                if (!menu) {
-                    menu = 0;
-                }
-            }*/
 
             if (ProcessGPS(&pvt)) {
                 error = 0;
@@ -129,11 +124,32 @@ void loop() {
                 display.ErrorMsg(error_msg.c_str());
             }
             break;
+            
         case Menu :
             disp->clearBuffer();
-            disp->setFont(u8g2_font_profont17_mr);
-            disp->setCursor(0, 64);
+            /*disp->setFont(u8g2_font_profont17_tr);
+            disp->setCursor(0, 12);
             disp->print("HELLO");
+            disp->setCursor(0, 25);
+            disp->print("HELLO");
+            disp->setCursor(0, 38);
+            disp->print("HELLO");
+            disp->setCursor(0, 51);
+            disp->print("HELLO");
+            disp->setCursor(0, 64);
+            disp->print("HELLO");*/
+            if (disp->userInterfaceSelectionList("Title", 1, "Exit\nVar1\nRefresh\nDUCK\nlol\nfkldsjf\nx3\nCancel") == 1) {
+                state = Accel;
+            } else {
+                state = ChangeVar;
+            }
             disp->sendBuffer();
+            break;
+
+        case ChangeVar :
+            disp->clearBuffer();
+            state = disp->userInterfaceSelectionList("Select Mode:", 1, "Accel\nMenu\nError\nChangeVar")-1;
+            //disp->userInterfaceInputValue("Select Voltage", "DAC= ", &state, 0, 5, 1, " V");
+            //disp->sendBuffer();
     }
 }
