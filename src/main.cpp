@@ -51,7 +51,7 @@ void switchMenu() {
 
 void setup() {
     pinMode(12, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(12), ISR_MENU, FALLING);
+    attachInterrupt(digitalPinToInterrupt(12), ISR_MENU, RISING);
     menu_btn = new Button(12, &debounce_tmr, switchMenu);
 
     display.init();
@@ -80,7 +80,6 @@ void loop() {
     switch (state) {
         case Error :
         case Accel :
-
             if (ProcessGPS(&pvt)) {
                 error = 0;
                 cur_time = millis();
@@ -126,7 +125,8 @@ void loop() {
             break;
             
         case Menu :
-            disp->clearBuffer();
+            debounce_tmr = 0;
+            detachInterrupt(MENU_PIN);
             /*disp->setFont(u8g2_font_profont17_tr);
             disp->setCursor(0, 12);
             disp->print("HELLO");
@@ -143,12 +143,15 @@ void loop() {
             } else {
                 state = ChangeVar;
             }
-            disp->sendBuffer();
+            attachInterrupt(digitalPinToInterrupt(MENU_PIN), ISR_MENU, RISING);
             break;
 
         case ChangeVar :
+            debounce_tmr = 0;
+            detachInterrupt(MENU_PIN);
             disp->clearBuffer();
             state = disp->userInterfaceSelectionList("Select Mode:", 1, "Accel\nMenu\nError\nChangeVar")-1;
+            attachInterrupt(digitalPinToInterrupt(MENU_PIN), ISR_MENU, RISING);
             //disp->userInterfaceInputValue("Select Voltage", "DAC= ", &state, 0, 5, 1, " V");
             //disp->sendBuffer();
     }

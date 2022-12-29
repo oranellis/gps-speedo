@@ -9,7 +9,7 @@ Button::Button(int pin, unsigned long* debounce_tmr_var, void (*btn_func) ()) {
 void Button::check() {
     if (millis() >= *debounce_tmr && *debounce_tmr != 0) {
         *debounce_tmr = 0;
-        if (!digitalRead(pin_num)) {
+        if (digitalRead(pin_num)) {
             func();
         }
     }
