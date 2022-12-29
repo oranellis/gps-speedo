@@ -15,10 +15,8 @@ U8G2* Display::GetU8G2() {
     return u8g2;
 }
 
-void Display::SetUnits(char units_str[4]) {
-    for (int i=0; i < 4; i++) {
-        units[i] = units_str[i];
-    }
+void Display::SetUnits(char* units_str) {
+    units = units_str;
 }
 
 void Display::UpdateDisp(float speed_inp, int sats, float timer) {
@@ -31,7 +29,7 @@ void Display::UpdateDisp(float speed_inp, int sats, float timer) {
     u8g2->printf("%.1f\n", timer);
     u8g2->setCursor(42, 64);
     u8g2->printf("*%i", sats);
-    u8g2->drawStr(84, 64, "km/h");
+    u8g2->drawStr(84, 64, units);
     u8g2->sendBuffer();
 }
 
