@@ -6,7 +6,7 @@ public:
     void init();
     U8G2* GetU8G2();
     void SetUnits(char* units_str);
-    void UpdateDisp(float speed_inp, int sats, float timer);
+    void UpdateDisp(float speed_inp, int sats, float timer, char* units);
     void ErrorMsg(const char* message);
 private:
     U8G2 *u8g2;

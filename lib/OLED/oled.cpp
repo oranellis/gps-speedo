@@ -15,11 +15,12 @@ U8G2* Display::GetU8G2() {
     return u8g2;
 }
 
-void Display::SetUnits(char* units_str) {
+// removed due to errors when using stored pointer
+/*void Display::SetUnits(char* units_str) {
     units = units_str;
-}
+}*/
 
-void Display::UpdateDisp(float speed_inp, int sats, float timer) {
+void Display::UpdateDisp(float speed_inp, int sats, float timer, char* units) {
     u8g2->clearBuffer();
     u8g2->setFont(u8g2_font_logisoso46_tn);
     u8g2->setCursor(0, 49);
@@ -29,7 +30,7 @@ void Display::UpdateDisp(float speed_inp, int sats, float timer) {
     u8g2->printf("%.1f\n", timer);
     u8g2->setCursor(42, 64);
     u8g2->printf("*%i", sats);
-    u8g2->drawStr(84, 64, "bru");
+    u8g2->drawStr(84, 64, units);
     u8g2->sendBuffer();
 }
 

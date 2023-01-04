@@ -3,6 +3,7 @@
 #include <interp.h>
 #include <button.h>
 #include <defines.h>
+#include <EEPROM.h>
 
 Display display;
 U8G2* disp;
@@ -15,15 +16,13 @@ uint8_t active_state = Accel;
 short error = 0;
 String error_msg;
 
-String units_str = "km/h";
+char unit_kmh[] = "km/h";
+char unit_mph[] = "mph";
+char unit_ms[] = "m/s";
+
+char* units_str = unit_kmh;
 double units_mult = 0.0036;  // multiplication by mm/s to reach desired units
 
-char unit_kmh[] = "km/h";
-char* unit_kmh_ptr = unit_kmh;
-char unit_mph[] = "mph";
-char* unit_mph_ptr = unit_mph;
-char unit_ms[] = "m/s";
-char* unit_ms_ptr = unit_ms;
 
 Button* menu_btn;
 
@@ -102,7 +101,7 @@ void loop() {
 
                 if (acc_started) {
                     timer = millis() - acc_start_time;
-                    if ((int)(ground_speed * units_mult) > end_speed) {
+                    if ((int)(ground_speed * units_mult) >= end_speed) {
                         acc_ready = 0;
                         acc_started = 0;
                     } else if ((int)(ground_speed * units_mult) < start_speed) {
@@ -110,7 +109,7 @@ void loop() {
                         acc_ready = 1;
                         acc_started = 0;
                     }
-                } else if ((acc_ready) && ((int)(ground_speed * units_mult) > start_speed)) {
+                } else if ((acc_ready) && ((int)(ground_speed * units_mult) >= start_speed)) {
                     acc_start_time = millis();
                     timer = 0;
                     acc_started = 1;
@@ -127,7 +126,7 @@ void loop() {
 
             if (((millis() - last_disp_refresh) >= (1000 / DISPLAY_HZ)) && (error == 0)) {
                 print_val = Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * units_mult;
-                display.UpdateDisp(print_val, pvt.num_sv, ((float)timer / 1000));
+                display.UpdateDisp(print_val, pvt.num_sv, ((float)timer / 1000), units_str);
             } else if (error == 1) {
                 display.ErrorMsg(error_msg.c_str());
             }
@@ -142,25 +141,23 @@ void loop() {
                     state = ChangeMode;
                     break;
                 case 2:
-                    disp->userInterfaceInputValue("Change Start Speed", "", &start_speed, 0, 244, 3, " V");
+                    disp->userInterfaceInputValue("Change Start Speed", "", &start_speed, 0, 244, 3, units_str);
                     break;
                 case 3:
-                    disp->userInterfaceInputValue("Change Start Speed", "", &end_speed, 0, 244, 3, " V");
+                    disp->userInterfaceInputValue("Change End Speed", "", &end_speed, 0, 244, 3, units_str);
                     break;
                 case 5:
                     switch (disp->userInterfaceSelectionList("Select Units", 1, "km/h\nmph\nm/s")) {
                         case 1:
-                            units_str = "km/h";
-                            display.SetUnits(unit_kmh_ptr);
+                            units_str = unit_kmh;
                             units_mult = 0.0036;
                             break;
                         case 2:
-                            units_str = "mph";
-                            display.SetUnits(unit_mph_ptr);
+                            units_str = unit_mph;
                             units_mult = 0.002236936;
+                            break;
                         case 3:
-                            units_str = "m/s";
-                            display.SetUnits(unit_ms_ptr);
+                            units_str = unit_ms;
                             units_mult = 0.001;
                     }
                 case 6:
@@ -178,6 +175,5 @@ void loop() {
             active_state = state;
             delay(10);
             attachInterrupt(digitalPinToInterrupt(MENU_PIN), ISR_MENU, RISING);
-            //disp->userInterfaceInputValue("Select Voltage", "DAC= ", &state, 0, 5, 1, " V");
     }
 }
