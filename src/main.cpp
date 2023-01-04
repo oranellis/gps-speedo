@@ -134,6 +134,7 @@ void loop() {
             break;
             
         case Menu :
+            disp->setFont(u8g2_font_7x13_tr);
             detachInterrupt(MENU_PIN);
             debounce_tmr = 0;
             switch (disp->userInterfaceSelectionList("Settings", 1, "Change Mode\nChange Start Speed\nChange End Speed\nChange Distance\nChange Units\nExit")) {
