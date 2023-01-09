@@ -163,7 +163,7 @@ void loop() {
                 case 6:
                     state = active_state;
             }
-            delay(10);
+            delay(BTN_DELAY);
             attachInterrupt(digitalPinToInterrupt(MENU_PIN), ISR_MENU, RISING);
             break;
 
@@ -173,7 +173,7 @@ void loop() {
             disp->clearBuffer();
             state = disp->userInterfaceSelectionList("Select Mode:", 1, "Acceleration\nDistance\nTop Speed")-1;
             active_state = state;
-            delay(10);
+            delay(BTN_DELAY);
             attachInterrupt(digitalPinToInterrupt(MENU_PIN), ISR_MENU, RISING);
     }
 }

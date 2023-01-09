@@ -4,3 +4,4 @@
 #define MENU_PIN 12
 #define UP_PIN 13
 #define DOWN_PIN 14
+#define BTN_DELAY 10
