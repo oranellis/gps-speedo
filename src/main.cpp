@@ -3,7 +3,6 @@
 #include <interp.h>
 #include <button.h>
 #include <defines.h>
-#include <EEPROM.h>
 
 Display display;
 U8G2* disp;
@@ -28,6 +27,7 @@ Button* menu_btn;
 
 double prev_speed = 0;
 double ground_speed = 0;
+double max_speed = 0;
 float print_val = 0;
 int interp_count = 0;
 unsigned long last_gps_refresh = 0;
@@ -71,16 +71,16 @@ void setup() {
     Serial.begin(115200);
     
     
-    //int start_time = millis();
+    int start_time = millis();
 
-    /*while (!ProcessGPS(&pvt)) {
+    while (!ProcessGPS(&pvt)) {
         if (millis() - start_time > 5000) {
-            state = Error;
+            error = 1;
             error_msg = "No GPS Data";
             break;
         }
     }
-    delay(200);*/
+    delay(200);
 }
 
 void loop() {
@@ -126,12 +126,41 @@ void loop() {
 
             if (((millis() - last_disp_refresh) >= (1000 / DISPLAY_HZ)) && (error == 0)) {
                 print_val = Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * units_mult;
-                display.UpdateDisp(print_val, pvt.num_sv, ((float)timer / 1000), units_str);
+                display.UpdateDispAccel(print_val, pvt.num_sv, ((float)timer / 1000), units_str);
             } else if (error == 1) {
                 display.ErrorMsg(error_msg.c_str());
             }
             break;
             
+        case Speed :
+            if (ProcessGPS(&pvt)) {
+                error = 0;
+                cur_time = millis();
+                gps_hz = (cur_time - last_gps_refresh) / 1000;
+                last_gps_refresh = cur_time;
+
+                prev_speed = ground_speed;
+                ground_speed = pvt.gnd_speed;
+                interp_count = 0;
+                last_disp_refresh = cur_time;
+
+            } else if ((millis() - last_gps_refresh) > 1000)  {
+                error = 1;
+                error_msg = "No GPS Data";
+            }
+
+            if (ground_speed > max_speed) {
+                max_speed = ground_speed;
+            }
+
+            if (((millis() - last_disp_refresh) >= (1000 / DISPLAY_HZ)) && (error == 0)) {
+                print_val = Interp(prev_speed, ground_speed, interp_count, INTERP_NUM) * units_mult;
+                display.UpdateDispSpeed(print_val, pvt.num_sv, (max_speed * units_mult), units_str);
+            } else if (error == 1) {
+                display.ErrorMsg(error_msg.c_str());
+            }
+            break;
+
         case Menu :
             disp->setFont(u8g2_font_7x13_tr);
             detachInterrupt(MENU_PIN);

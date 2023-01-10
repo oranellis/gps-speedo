@@ -20,7 +20,7 @@ U8G2* Display::GetU8G2() {
     units = units_str;
 }*/
 
-void Display::UpdateDisp(float speed_inp, int sats, float timer, char* units) {
+void Display::UpdateDispAccel(float speed_inp, int sats, float timer, char* units) {
     u8g2->clearBuffer();
     u8g2->setFont(u8g2_font_logisoso46_tn);
     u8g2->setCursor(0, 49);
@@ -28,6 +28,20 @@ void Display::UpdateDisp(float speed_inp, int sats, float timer, char* units) {
     u8g2->setFont(u8g2_font_profont17_mr);
     u8g2->setCursor(0, 64);
     u8g2->printf("%.1f\n", timer);
+    u8g2->setCursor(42, 64);
+    u8g2->printf("*%i", sats);
+    u8g2->drawStr(84, 64, units);
+    u8g2->sendBuffer();
+}
+
+void Display::UpdateDispSpeed(float speed_inp, int sats, float max_speed, char* units) {
+    u8g2->clearBuffer();
+    u8g2->setFont(u8g2_font_logisoso46_tn);
+    u8g2->setCursor(0, 49);
+    u8g2->printf("%.1f\n", speed_inp);
+    u8g2->setFont(u8g2_font_profont17_mr);
+    u8g2->setCursor(0, 64);
+    u8g2->printf("%.1f\n", max_speed);
     u8g2->setCursor(42, 64);
     u8g2->printf("*%i", sats);
     u8g2->drawStr(84, 64, units);
