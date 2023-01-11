@@ -4,12 +4,11 @@ An esp8266/8285 based, high-refresh GPS speedometer, to be used for acceleration
 ## Current Features
 - 10Hz GPS updates
 - Interpolation to display at 60Hz, adding roughly 100ms delay
-- Acceleration timing, currently with fixed start and end speed
+- Acceleration timing, with adjustable start and end speed (currently limited to max of 255, to be improved)
+- Basic menu system, based on 3 button navigation
+- Ability to change units, currently km/h, mph and m/s
 
 ## Planned Features
-- Add menu system, based on 3 button navigation
-- Make start/ end speed adjustable
 - Add distance timing (quarter mile etc.)
-- Add ability to change units
 - Add accelerometer for g-force sensing
 - Add Kalman Filter to increase GPS accuracy
