@@ -4,10 +4,13 @@
 class Display {
 public:
     void init();
-    void SetUnits(char units_str[4]);
-    void UpdateDisp(float speed_inp, int sats, float timer);
+    U8G2* GetU8G2();
+    void SetUnits(char* units_str);
+    void UpdateDispAccel(float speed_inp, int sats, float timer, char* units);
+    void UpdateDispSpeed(float speed_inp, int sats, float max_speed, char* units);
     void ErrorMsg(const char* message);
 private:
-    char units[4];
+    U8G2 *u8g2;
+    char* units;
     double speed;
 };
