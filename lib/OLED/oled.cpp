@@ -55,3 +55,36 @@ void Display::ErrorMsg(const char* message) {
                        0, 2, 2, message);
   u8g2->sendBuffer();
 }
+
+void Display::Clear() { u8g2->clearBuffer(); }
+
+void Display::Init(const char* text) {
+  u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, U8X8_PIN_NONE);
+  u8g2->begin();
+  u8g2->clearBuffer();
+  u8g2->setFont(OledScreen::splash_font_);
+  u8g2->drawStr(0, 40, text);
+  u8g2->sendBuffer();
+  u8g2->setFont(normal_font_);
+}
+
+void Display::PrintLine(unsigned short* y_pos, const char* format, ...) {
+  char disp_cstr[STR_MAX_LEN];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(disp_cstr, STR_MAX_LEN, format, args);
+  va_end(args);
+  u8g2->drawStr(0, *y_pos, disp_cstr);
+  *y_pos += normal_font_height_;
+}
+
+void Display::PrintLine(unsigned short y_pos, const char* format, ...) {
+  char disp_cstr[STR_MAX_LEN];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(disp_cstr, STR_MAX_LEN, format, args);
+  va_end(args);
+  u8g2->drawStr(0, y_pos, disp_cstr);
+}
+
+void Display::Render() { u8g2->sendBuffer(); }

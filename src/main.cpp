@@ -3,6 +3,7 @@
 #include <gps.h>
 #include <interp.h>
 #include <oled.h>
+#include <gs_menu.h>
 
 Display display;
 U8G2* disp;
