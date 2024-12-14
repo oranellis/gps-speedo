@@ -1,0 +1,12 @@
+CompileFlags:
+  # Add flags to help clangd locate headers for arm-none-eabi
+  Add:
+    - "--target=arm-none-eabi"
+    - "--sysroot=/usr/arm-none-eabi"
+    - "--gcc-toolchain=/usr/arm-none-eabi"
+    - "-isystem/usr/arm-none-eabi/include/c++/14.2.0"
+    - "-isystem/usr/arm-none-eabi/include/c++/14.2.0/arm-none-eabi"
+    - "-isystem/usr/arm-none-eabi/include/c++/14.2.0/backward"
+    - "-isystem/usr/lib/gcc/arm-none-eabi/14.2.0/include"
+    - "-isystem/usr/lib/gcc/arm-none-eabi/14.2.0/include-fixed"
+    - "-isystem/usr/arm-none-eabi/include"
