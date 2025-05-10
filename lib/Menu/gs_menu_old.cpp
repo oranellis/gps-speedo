@@ -6,9 +6,11 @@ MenuAction MenuItem::SubMenu::HandleClick(ClickDirection dir) {
   switch (dir) {
     case ClickDirection::Up:
       return MenuAction::MoveUp;
-      break;
     case ClickDirection::Down:
       return MenuAction::MoveDown;
+    case ClickDirection::Right:
+      // Trigger menu to change to
+      return MenuAction::SubMenu;
   }
 }
 
@@ -16,13 +18,12 @@ std::string MenuItem::SubMenu::GetLine(uint8_t char_length) {
 
 }
 
-MenuItem::Select::Select(std::string display_string) {}
+MenuItem::Select::Select(std::string display_string, std::function<void()> func) : display_string_(display_string), func_(func) {}
 
 MenuAction MenuItem::Select::HandleClick(ClickDirection dir) {
   switch (dir) {
     case ClickDirection::Up:
       return MenuAction::MoveUp;
-      break;
     case ClickDirection::Down:
       return MenuAction::MoveDown;
   }
@@ -38,7 +39,6 @@ MenuAction MenuItem::CheckBox::HandleClick(ClickDirection dir) {
   switch (dir) {
     case ClickDirection::Up:
       return MenuAction::MoveUp;
-      break;
     case ClickDirection::Down:
       return MenuAction::MoveDown;
   }

@@ -1,33 +1,37 @@
 #pragma once
 
+#include <cstdint>
+#include <functional>
+#include <memory>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 #include "oled.h"
 
-enum MenuItemType {
+enum struct MenuItemType {
   SubMenu,
   Select,
   CheckBox,
   Number,
 };
 
-enum ClickDirection {
+enum struct ClickDirection {
   Up,
   Right,
   Down,
 };
 
-enum MenuAction {
+enum struct MenuAction {
   None,
   MoveUp,
   MoveDown,
   MenuBack,
   CloseMenu,
+  SubMenu,
 };
 
 class IMenuItem {
+  std::shared_ptr<Options>
 public:
   virtual MenuAction HandleClick(ClickDirection dir) = 0;
   virtual std::string GetLine(uint8_t char_length) = 0;
@@ -35,7 +39,7 @@ public:
 
 namespace MenuItem {
 class SubMenu : IMenuItem {
-  std::string menu_name_;
+  const std::string menu_name_;
 
 public:
   SubMenu(std::string menu_name);
@@ -45,9 +49,10 @@ public:
 
 class Select : IMenuItem {
   const std::string display_string_;
+  const std::function<void()> func_;
 
 public:
-  Select(std::string display_string);
+  Select(std::string display_string, std::function<void()> func);
   MenuAction HandleClick(ClickDirection dir) override;
   std::string GetLine(uint8_t char_length) override;
 };
@@ -64,10 +69,10 @@ public:
 
 class Number : IMenuItem {
   const std::string display_string_;
-  std::int16_t num_;
   const std::int16_t min_;
   const std::int16_t max_;
   const std::uint16_t step_;
+  std::int16_t num_;
   bool capture_cursor_;
 
 public:
